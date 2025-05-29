@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Biểu đồ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #f8f9fc; /* Phù hợp với màu nền của QMainWindow */
+        font-family: "Segoe UI", Arial, sans-serif;
+      }
+      #myChart {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 600px;
+        max-height: 400px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myChart"></canvas>
+    <script>
+      function renderChart(chartType, labels, data, label) {
+        const ctx = document.getElementById("myChart").getContext("2d");
+        new Chart(ctx, {
+          type: chartType,
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: label,
+                data: data,
+                backgroundColor:
+                  chartType === "line"
+                    ? "rgba(26, 115, 232, 0.2)" /* Màu nền nhạt cho line */
+                    : [
+                        "#1a73e8" /* Xanh chính từ STYLESHEET */,
+                        "#28a745" /* Xanh lá */,
+                        "#ffc107" /* Vàng */,
+                        "#dc3545" /* Đỏ */,
+                        "#6c757d" /* Xám */,
+                      ],
+                borderColor:
+                  chartType === "line"
+                    ? "#1a73e8" /* Xanh đậm cho đường line */
+                    : ["#1557b0", "#1e7e34", "#e0a800", "#c82333", "#5a6268"],
+                borderWidth: 2 /* Đường viền dày hơn để nổi bật */,
+                fill: chartType === "line" ? true : false,
+                tension:
+                  chartType === "line" ? 0.3 : 0 /* Đường line mượt mà hơn */,
+                pointRadius:
+                  chartType === "line" ? 5 : 0 /* Điểm trên đường line */,
+                pointHoverRadius:
+                  chartType === "line" ? 8 : 0 /* Hiệu ứng hover cho điểm */,
+                borderRadius:
+                  chartType === "bar" ? 5 : 0 /* Làm tròn góc cột */,
+                barPercentage:
+                  chartType === "bar" ? 0.8 : 1 /* Khoảng cách giữa các cột */,
+                categoryPercentage: chartType === "bar" ? 0.9 : 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales:
+              chartType !== "pie"
+                ? {
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text:
+                          chartType === "line"
+                            ? "Doanh thu (nghìn VNĐ)"
+                            : "Số lượng",
+                        font: {
+                          family: "'Segoe UI', Arial, sans-serif",
+                          size: 14,
+                          weight: "bold",
+                        },
+                        color: "#2c3e50" /* Màu chữ giống QWidget */,
+                      },
+                      ticks: {
+                        font: {
+                          family: "'Segoe UI', Arial, sans-serif",
+                          size: 12,
+                        },
+                        color: "#2c3e50",
+                      },
+                      grid: {
+                        color:
+                          "rgba(0, 0, 0, 0.05)" /* Lưới nhạt để không làm rối */,
+                      },
+                    },
+                    x: {
+                      title: {
+                        display: true,
+                        text: chartType === "line" ? "Tháng" : "Danh mục",
+                        font: {
+                          family: "'Segoe UI', Arial, sans-serif",
+                          size: 14,
+                          weight: "bold",
+                        },
+                        color: "#2c3e50",
+                      },
+                      ticks: {
+                        font: {
+                          family: "'Segoe UI', Arial, sans-serif",
+                          size: 12,
+                        },
+                        color: "#2c3e50",
+                      },
+                      grid: {
+                        display: false /* Ẩn lưới trục x để giao diện sạch hơn */,
+                      },
+                    },
+                  }
+                : {},
+            plugins: {
+              legend: {
+                position: chartType === "pie" ? "right" : "top",
+                labels: {
+                  font: {
+                    family: "'Segoe UI', Arial, sans-serif",
+                    size: 12,
+                  },
+                  color: "#2c3e50",
+                  padding: 15 /* Khoảng cách giữa các chú thích */,
+                  boxWidth: 20,
+                  usePointStyle:
+                    chartType === "line" /* Hình tròn cho chú thích line */,
+                },
+              },
+              tooltip: {
+                backgroundColor:
+                  "rgba(26, 115, 232, 0.9)" /* Màu nền tooltip */,
+                titleFont: {
+                  family: "'Segoe UI', Arial, sans-serif",
+                  size: 14,
+                  weight: "bold",
+                },
+                bodyFont: {
+                  family: "'Segoe UI', Arial, sans-serif",
+                  size: 12,
+                },
+                padding: 10,
+                cornerRadius: 5,
+                caretSize: 8 /* Kích thước mũi tên tooltip */,
+              },
+              title: {
+                display: true,
+                text:
+                  chartType === "bar"
+                    ? "Doanh thu theo danh mục"
+                    : chartType === "line"
+                    ? "Doanh thu theo tháng"
+                    : "Phân bố trạng thái đơn hàng",
+                font: {
+                  family: "'Segoe UI', Arial, sans-serif",
+                  size: 16,
+                  weight: "bold",
+                },
+                color: "#1a73e8",
+                padding: {
+                  top: 10,
+                  bottom: 20,
+                },
+              },
+            },
+            animation: {
+              duration: 1000 /* Hiệu ứng chuyển động mượt mà */,
+              easing: "easeInOutQuad",
+            },
+            elements: {
+              bar: {
+                borderSkipped: false /* Đảm bảo viền đầy đủ cho cột */,
+              },
+              point: {
+                pointStyle: "circle" /* Hình tròn cho điểm trên line */,
+                backgroundColor: "#1a73e8",
+                borderColor: "#ffffff",
+                borderWidth: 2,
+              },
+            },
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
