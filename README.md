@@ -177,3 +177,4 @@ Nếu muốn sử dụng tính năng gửi email, bạn cần tài khoản SendG
 
 ### Tác giả
 - **Quan Luu** ([quan2003](https://github.com/quan2003))
+- Liên hệ: 0336440523
